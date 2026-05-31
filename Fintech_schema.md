@@ -1,3 +1,6 @@
+## Schema Model
+[Fintech Schema](Models_Schema.py)
+
 ## Schema integration in Terminal
 
 
