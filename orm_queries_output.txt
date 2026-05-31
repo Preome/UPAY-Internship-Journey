@@ -263,3 +263,7 @@ Top 10 Customers by Lifetime Value:
     Days Active: 1
     Risk Score: LOW
     Credit Score: 710
+
+================================================================================
+ ALL 15 QUERIES EXECUTED SUCCESSFULLY!
+================================================================================

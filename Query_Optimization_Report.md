@@ -32,3 +32,18 @@
 ![8](images/8.png)
 
 ![9](images/9.png)
+
+
+
+## Optimization Report from Terminal
+
+
+![12](images/12.png)
+
+![13](images/13.png)
+
+![14](images/14.png)
+
+![15](images/15.png)
+
+

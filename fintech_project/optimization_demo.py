@@ -283,7 +283,7 @@ def optimized_dashboard_stats():
     """
     OPTIMIZED QUERY - Single query with multiple aggregations
     """
-    print("\n🚀 OPTIMIZED QUERY: Dashboard statistics (WITH optimization)")
+    print("\n OPTIMIZED QUERY: Dashboard statistics (WITH optimization)")
     print("-" * 60)
     print("SOLUTION: Single aggregation query with conditional counts")
     
