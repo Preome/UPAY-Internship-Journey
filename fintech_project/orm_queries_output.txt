@@ -1,0 +1,269 @@
+================================================================================
+DJANGO ORM QUERIES - FINTECH APPLICATION
+================================================================================
+
+1. SELECT_RELATED - Get transactions with account and merchant data in single query
+------------------------------------------------------------
+Txn PURCHASE2026053000000: Account ACC18S118, Merchant: Uber
+Txn PURCHASE2026053000001: Account ACC17S540, Merchant: High Risk Corp
+Txn PURCHASE2026053000002: Account ACC15C352, Merchant: Starbucks
+Txn PURCHASE2026053000003: Account ACC17C548, Merchant: McDonald's
+Txn PURCHASE2026053000004: Account ACC14C678, Merchant: McDonald's
+Number of queries: 1 (instead of 1 + N)
+
+2. PREFETCH_RELATED - Get accounts with their cards and transactions
+------------------------------------------------------------
+Account ACC11C109: 2 cards, 34 transactions
+Account ACC11S727: 2 cards, 27 transactions
+Account ACC12C586: 2 cards, 41 transactions
+Number of queries: 3 (accounts, cards, transactions) - independent joins
+
+3. F() EXPRESSIONS - Update balance without race conditions
+------------------------------------------------------------
+Before update: Sample account balances
+  ACC11C109: $25970.93
+  ACC12C586: $51699.29
+  ACC13C932: $38821.59
+
+Updated 10 checking accounts (+5%)
+After update:
+  ACC11C109: $27269.48
+  ACC12C586: $54284.25
+  ACC13C932: $40762.67
+
+Transactions > 10% of account balance: 3
+
+4. Q() OBJECTS - Complex OR conditions
+------------------------------------------------------------
+Transactions that are high-risk OR > $500:
+  $653.23 - Uber - Normal
+  $769.65 - High Risk Corp - HIGH RISK
+  $873.11 - Starbucks - Normal
+  $620.84 - McDonald's - Normal
+  $890.34 - McDonald's - Normal
+  $92.99 - High Risk Corp - HIGH RISK
+  $514.95 - Casino Royale - HIGH RISK
+  $854.40 - Netflix - Normal
+  $665.32 - Apple Store - Normal
+  $532.15 - Walmart - Normal
+
+Safe transactions (non-high-risk AND < $100): 5
+
+5. AGGREGATION - Total balance and transaction statistics
+------------------------------------------------------------
+Bank Statistics:
+  Total balance: $666,217.23
+  Average balance: $33,310.86
+  Max balance: $54,284.25
+  Min balance: $960.84
+  Total accounts: 20
+
+6. ANNOTATIONS - Add computed fields to each object
+------------------------------------------------------------
+Account ACC12C586:
+  Transactions: 41
+  Total spent: $34,895.11
+  Avg transaction: $851.10
+  High volume: False
+Account ACC20C214:
+  Transactions: 28
+  Total spent: $18,999.94
+  Avg transaction: $678.57
+  High volume: False
+Account ACC19C925:
+  Transactions: 34
+  Total spent: $21,001.17
+  Avg transaction: $617.68
+  High volume: False
+Account ACC15C352:
+  Transactions: 27
+  Total spent: $27,445.49
+  Avg transaction: $1,016.50
+  High volume: False
+Account ACC12S543:
+  Transactions: 31
+  Total spent: $28,943.26
+  Avg transaction: $933.65
+  High volume: False
+
+7. GROUP BY - Transactions by merchant category
+------------------------------------------------------------
+retail:
+  Sales: $45,660.00
+  Transactions: 87
+  Average: $524.83
+  Unique customers: 20
+restaurant:
+  Sales: $23,985.07
+  Transactions: 49
+  Average: $489.49
+  Unique customers: 20
+other:
+  Sales: $20,610.05
+  Transactions: 39
+  Average: $528.46
+  Unique customers: 19
+gambling:
+  Sales: $15,097.56
+  Transactions: 31
+  Average: $487.02
+  Unique customers: 16
+entertainment:
+  Sales: $14,907.25
+  Transactions: 26
+  Average: $573.36
+  Unique customers: 15
+
+8. CONDITIONAL AGGREGATION - Success/failure rates
+------------------------------------------------------------
+Transaction Metrics:
+  Total: 650
+  Successful: 381
+  Failed: 114
+  Pending: 155
+  Success Rate: 58.62%
+  Volume (successful): $311,144.11
+
+9. SUBQUERIES - Users with above-average spending
+------------------------------------------------------------
+Users with transactions above average ($816.65):
+  User 10: Total spent: $29,033.24, Avg: $784.68
+  User 9: Total spent: $31,002.74, Avg: $704.61
+  User 8: Total spent: $40,056.39, Avg: $953.72
+  User 7: Total spent: $28,822.89, Avg: $779.00
+  User 6: Total spent: $26,484.35, Avg: $630.58
+
+10. RANKINGS - Rank users by spending
+------------------------------------------------------------
+User Rankings by Transaction Volume:
+  #1: User 8 - 75 transactions
+  #2: User 2 - 72 transactions
+  #3: User 10 - 69 transactions
+  #4: User 7 - 67 transactions
+  #5: User 6 - 67 transactions
+  #6: User 9 - 66 transactions
+  #7: User 3 - 63 transactions
+  #8: User 4 - 61 transactions
+  #9: User 1 - 61 transactions
+  #10: User 5 - 49 transactions
+
+11. DATE AGGREGATIONS - Monthly transaction trends
+------------------------------------------------------------
+Last 6 months trends:
+  May 2026:
+    Volume: $311,144.11
+    Count: 381
+    Average: $816.65
+
+12. ADVANCED FILTERING - High-risk merchants with suspicious activity
+------------------------------------------------------------
+  Casino Royale:
+    Transactions: 50
+    Avg: $485.46
+    Max: $996.00
+  High Risk Corp:
+    Transactions: 68
+    Avg: $513.64
+    Max: $995.65
+
+13. COMPLEX FILTERING - High-value transactions from active users
+------------------------------------------------------------
+High-value transactions from active users:
+  $653.23 - Uber - User: user8@example.com
+  $769.65 - High Risk Corp - User: user7@example.com
+  $514.95 - Casino Royale - User: user6@example.com
+  $854.40 - Netflix - User: user9@example.com
+  $665.32 - Apple Store - User: user10@example.com
+  $532.15 - Walmart - User: user5@example.com
+  $554.98 - Uber - User: user2@example.com
+  $568.02 - McDonald's - User: user10@example.com
+  $735.79 - McDonald's - User: user5@example.com
+  $600.47 - High Risk Corp - User: user8@example.com
+
+14. EXISTS SUBSELECT - Users with recent activity
+------------------------------------------------------------
+Users active in last 30 days: 10
+Sample active users:
+  User 1 - High balance: True
+  User 2 - High balance: True
+  User 3 - High balance: True
+  User 4 - High balance: True
+  User 5 - High balance: True
+
+15. COMPLEX ANNOTATIONS - Customer lifetime value and risk scoring
+------------------------------------------------------------
+Top 10 Customers by Lifetime Value:
+
+  User 2:
+    Lifetime Value: $43,464.18
+    Avg Transaction: $987.82
+    Days Active: 1
+    Risk Score: MEDIUM
+    Credit Score: 686
+
+  User 8:
+    Lifetime Value: $40,056.39
+    Avg Transaction: $953.72
+    Days Active: 1
+    Risk Score: LOW
+    Credit Score: 706
+
+  User 1:
+    Lifetime Value: $38,673.52
+    Avg Transaction: $1,104.96
+    Days Active: 1
+    Risk Score: LOW
+    Credit Score: 780
+
+  User 9:
+    Lifetime Value: $31,002.74
+    Avg Transaction: $704.61
+    Days Active: 1
+    Risk Score: MEDIUM
+    Credit Score: 691
+
+  User 10:
+    Lifetime Value: $29,033.24
+    Avg Transaction: $784.68
+    Days Active: 1
+    Risk Score: LOW
+    Credit Score: 712
+
+  User 7:
+    Lifetime Value: $28,822.89
+    Avg Transaction: $779.00
+    Days Active: 1
+    Risk Score: LOW
+    Credit Score: 790
+
+  User 4:
+    Lifetime Value: $27,531.88
+    Avg Transaction: $724.52
+    Days Active: 1
+    Risk Score: LOW
+    Credit Score: 786
+
+  User 6:
+    Lifetime Value: $26,484.35
+    Avg Transaction: $630.58
+    Days Active: 1
+    Risk Score: MEDIUM
+    Credit Score: 645
+
+  User 3:
+    Lifetime Value: $23,200.17
+    Avg Transaction: $682.36
+    Days Active: 1
+    Risk Score: MEDIUM
+    Credit Score: 620
+
+  User 5:
+    Lifetime Value: $22,874.75
+    Avg Transaction: $816.96
+    Days Active: 1
+    Risk Score: LOW
+    Credit Score: 710
+
+================================================================================
+ ALL 15 QUERIES EXECUTED SUCCESSFULLY!
+================================================================================
