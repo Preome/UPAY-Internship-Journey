@@ -6,6 +6,8 @@
 
 [Custom Django Middlware](Python_OOP_&_Django_Internals/django_logging/middleware)
 
+[Request Log output](RequestLog.txt)
+
 3. Read Django source code — how HttpRequest travels from wsgi to view to client. Write a 1-page explanation(in markdown) in your own words
 
 [HttpRequestTraversal](HttpRequest_traversal.md)

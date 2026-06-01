@@ -1,0 +1,13 @@
+2026-05-22 11:22:17 | IP: 127.0.0.1       | Method: GET    | Path: /                              | Status: 200 | Time: 0.83ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-22 11:22:23 | IP: 127.0.0.1       | Method: GET    | Path: /slow/                         | Status: 200 | Time: 1001.21ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-22 11:25:49 | IP: 127.0.0.1       | Method: GET    | Path: /                              | Status: 200 | Time: 0.31ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-22 11:25:49 | IP: 127.0.0.1       | Method: GET    | Path: /favicon.ico                   | Status: 404 | Time: 173.82ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-22 11:26:04 | IP: 127.0.0.1       | Method: GET    | Path: /test/                         | Status: 200 | Time: 0.14ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-22 11:26:30 | IP: 127.0.0.1       | Method: GET    | Path: /slow/                         | Status: 200 | Time: 1000.81ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-22 11:26:39 | IP: 127.0.0.1       | Method: GET    | Path: /user-agent/                   | Status: 200 | Time: 0.42ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-23 11:22:27 | IP: 127.0.0.1       | Method: GET    | Path: /                              | Status: 200 | Time: 0.38ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-23 11:22:31 | IP: 127.0.0.1       | Method: GET    | Path: /test/                         | Status: 200 | Time: 0.24ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-23 11:22:36 | IP: 127.0.0.1       | Method: GET    | Path: /slow/                         | Status: 200 | Time: 1001.62ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-23 11:22:39 | IP: 127.0.0.1       | Method: GET    | Path: /error/                        | Status: 404 | Time: 0.22ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-23 11:22:42 | IP: 127.0.0.1       | Method: GET    | Path: /json/                         | Status: 200 | Time: 0.32ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
+2026-05-23 11:22:45 | IP: 127.0.0.1       | Method: GET    | Path: /user-agent/                   | Status: 200 | Time: 0.14ms | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
