@@ -2,7 +2,7 @@
 
 1. Fintech schema — 5+ models with proper relations, indexes, constraints  
 [Fintech Schema](Fintech_schema.md)
-[Schema Model](Models_schema.py)
+[Schema Model](Models_Schema.py)
 
 2. ORM query file — 15 queries with comments explaining each one  
 [ORM Query File](orm_queries.py)
@@ -10,7 +10,7 @@
 
 
 3. Query optimization report — before/after query time with debug toolbar screenshots
-[Query optimization Report](Query_Optimization_Report.py)
+[Query optimization Report](Query_Optimization_Report.md)
 [Optimization File](optimization.py)
 
 
