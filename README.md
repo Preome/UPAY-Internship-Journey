@@ -8,4 +8,4 @@
 
 3. Read Django source code — how HttpRequest travels from wsgi to view to client. Write a 1-page explanation(in markdown) in your own words
 
-[HttpRequest_traversal] (HttpRequest_traversal.md)
+[HttpRequestTraversal] (HttpRequest_traversal.md)
