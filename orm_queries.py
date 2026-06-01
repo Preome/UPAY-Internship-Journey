@@ -24,6 +24,8 @@ transactions = Transaction.objects.select_related('account', 'merchant')[:5]
 for t in transactions:
     print(f"Txn {t.transaction_id}: Account {t.account.account_number}, Merchant: {t.merchant.name if t.merchant else 'N/A'}")
 print(f"Number of queries: 1 (instead of 1 + N)")
+#Fetches transactions along with their related account and merchant data in a single database query using SQL JOINs.
+
 
 # ============= QUERY 2: prefetch_related =============
 print("\n2. PREFETCH_RELATED - Get accounts with their cards and transactions")
@@ -32,6 +34,7 @@ accounts = Account.objects.prefetch_related('cards', 'transactions')[:3]
 for acc in accounts:
     print(f"Account {acc.account_number}: {acc.cards.count()} cards, {acc.transactions.count()} transactions")
 print("Number of queries: 3 (accounts, cards, transactions) - independent joins")
+#Performs separate queries and joins them in Python memory. This is Perfect for reverse relationships where the foreign key is on the other model.
 
 # ============= QUERY 3: F() expressions =============
 print("\n3. F() EXPRESSIONS - Update balance without race conditions")
@@ -51,6 +54,7 @@ for acc in Account.objects.filter(account_type='checking')[:3]:
 
 result = Transaction.objects.filter(amount__gt=F('account__balance') * Decimal('0.1'))[:3]
 print(f"\nTransactions > 10% of account balance: {result.count()}")
+#Increases all checking account balances by 5% directly in the database, without race conditions.
 
 # ============= QUERY 4: Q() objects for complex lookups =============
 print("\n4. Q() OBJECTS - Complex OR conditions")
@@ -69,6 +73,8 @@ safe_transactions = Transaction.objects.filter(
     ~Q(merchant__is_high_risk=True) & Q(amount__lt=100)
 )[:5]
 print(f"\nSafe transactions (non-high-risk AND < $100): {safe_transactions.count()}")
+#Finds transactions that are EITHER from high-risk merchants OR greater than $500 or both.
+
 
 # ============= QUERY 5: Basic Aggregation =============
 print("\n5. AGGREGATION - Total balance and transaction statistics")
@@ -87,6 +93,8 @@ print(f"  Average balance: ${stats['avg_balance']:,.2f}")
 print(f"  Max balance: ${stats['max_balance']:,.2f}")
 print(f"  Min balance: ${stats['min_balance']:,.2f}")
 print(f"  Total accounts: {stats['total_accounts']}")
+
+#Calculates summary statistics across ALL accounts in a single database query.
 
 # ============= QUERY 6: Annotations =============
 print("\n6. ANNOTATIONS - Add computed fields to each object")
@@ -109,6 +117,8 @@ for acc in accounts_with_stats:
     print(f"  Total spent: ${acc.total_spent:,.2f}")
     print(f"  Avg transaction: ${acc.avg_transaction:,.2f}")
     print(f"  High volume: {acc.is_high_volume}")
+#Adds calculated fields to each account object.
+
 
 # ============= QUERY 7: Group By / Values + Annotation =============
 print("\n7. GROUP BY - Transactions by merchant category")
@@ -130,6 +140,8 @@ for stat in merchant_stats[:5]:
     print(f"  Transactions: {stat['transaction_count']}")
     print(f"  Average: ${stat['avg_transaction']:,.2f}")
     print(f"  Unique customers: {stat['total_unique_customers']}")
+
+#  Groups transactions by merchant category and calculates statistics for each category    
 
 # ============= QUERY 8: Conditional Aggregation =============
 print("\n8. CONDITIONAL AGGREGATION - Success/failure rates")
@@ -161,6 +173,7 @@ print(f"  Failed: {transaction_metrics['failed']}")
 print(f"  Pending: {transaction_metrics['pending']}")
 print(f"  Success Rate: {transaction_metrics['success_rate']}%")
 print(f"  Volume (successful): ${transaction_metrics['total_volume_success']:,.2f}")
+#Counts transactions by status in a SINGLE database query using conditional counting.
 
 # ============= QUERY 9: Subqueries =============
 print("\n9. SUBQUERIES - Users with above-average spending")
@@ -186,6 +199,7 @@ users_above_avg = User.objects.filter(
 print(f"Users with transactions above average (${avg_spending:.2f}):")
 for user in users_above_avg:
     print(f"  {user.full_name}: Total spent: ${user.total_spent or 0:,.2f}, Avg: ${user.avg_transaction or 0:,.2f}")
+#Finds users who have at least one transaction above the average spending amount.
 
 # ============= QUERY 10: Rankings =============
 print("\n10. RANKINGS - Rank users by spending")
@@ -198,6 +212,8 @@ user_rankings = User.objects.annotate(
 print("User Rankings by Transaction Volume:")
 for idx, user in enumerate(user_rankings, 1):
     print(f"  #{idx}: {user.full_name} - {user.transaction_count} transactions")
+#Ranks users by their number of transactions and Shows positions 1, 2, 3, etc.
+
 
 # ============= QUERY 11: Date-based Aggregations =============
 print("\n11. DATE AGGREGATIONS - Monthly transaction trends")
@@ -222,6 +238,8 @@ for trend in monthly_trends:
         print(f"    Count: {trend['transaction_count']}")
         print(f"    Average: ${trend['avg_transaction']:,.2f}")
 
+
+#Shows transaction trends grouped by month for the last 6 months.
 # ============= QUERY 12: Advanced Filtering with Subqueries =============
 print("\n12. ADVANCED FILTERING - High-risk merchants with suspicious activity")
 print("-" * 60)
@@ -239,6 +257,8 @@ for merchant in suspicious_merchants:
     print(f"    Transactions: {merchant.transaction_count}")
     print(f"    Avg: ${merchant.avg_transaction:,.2f}")
     print(f"    Max: ${merchant.max_transaction:,.2f}")
+#Analyzes high-risk merchants to find suspicious activity patterns.
+
 
 # ============= QUERY 13: Complex Filtering with Multiple Conditions =============
 print("\n13. COMPLEX FILTERING - High-value transactions from active users")
@@ -253,6 +273,7 @@ high_value_transactions = Transaction.objects.filter(
 print("High-value transactions from active users:")
 for txn in high_value_transactions:
     print(f"  ${txn.amount} - {txn.merchant.name if txn.merchant else 'Cash'} - User: {txn.account.user.email}")
+#Finds all completed transactions > $500 from active users, with related data pre-loaded.
 
 # ============= QUERY 14: Exists and Conditional Logic =============
 print("\n14. EXISTS SUBSELECT - Users with recent activity")
@@ -279,6 +300,7 @@ print(f"Users active in last 30 days: {active_users.count()}")
 print("Sample active users:")
 for user in active_users[:5]:
     print(f"  {user.full_name} - High balance: {user.has_high_balance}")
+#Finds users who have made any transaction in the last 30 days.
 
 # ============= QUERY 15: Complex Custom Annotations  =============
 print("\n15. COMPLEX ANNOTATIONS - Customer lifetime value and risk scoring")
@@ -314,6 +336,7 @@ customer_analytics = User.objects.annotate(
     )
 ).order_by('-lifetime_value')[:10]
 
+#Creates a complete cutomer profile with total trasactions, lifetime value, average transaction, days active, and a risk score based on credit score and balance.
 print("Top 10 Customers by Lifetime Value:")
 for customer in customer_analytics:
     
