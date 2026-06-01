@@ -16,6 +16,6 @@
 
 4. Django ORM docs — select_related, prefetch_related, F(), Q(), annotations
 
-[Django ORM Concepts](Django_ORM_Concept.ipynb)
+[Django ORM Concepts](Django_ORM_Concept.txt)
 
 ALL the main files are located inside fintech_project folder

@@ -1,0 +1,204 @@
+When using the Django ORM, accessing related objects can cause the N+1 query problem, where multiple unnecessary database queries are executed. Django provides select_related() and prefetch_related() to solve this and improve performance.
+
+''' select_related()
+select_related() fetches related objects in a single SQL query using JOINs. 
+Best suited for ForeignKey and OneToOneField relationships.'''
+
+SELECT city.*, province.*
+FROM city
+INNER JOIN province ON city.province_id = province.id;
+
+
+cities = City.objects.select_related("province")
+for city in cities:
+
+    print(city.province.name)
+
+
+#Example:
+
+from fintech.models import Transaction
+
+transactions = Transaction.objects.select_related(
+    "account",
+    "merchant"
+)
+
+for tx in transactions:
+    print(tx.account.account_number, tx.merchant.name)
+
+#Reduces N+1 queries by fetching related objects in one query.
+
+
+
+
+
+
+
+'''  prefetch_related()
+prefetch_related() runs separate database queries and combines the results in Python. 
+Best suited for ManyToManyField and reverse ForeignKey relationships. '''
+
+
+#Example:
+
+province = Province.objects.prefetch_related("city_set").get(name="Hubei Province")
+for city in province.city_set.all():
+
+    print(city.name)
+
+
+#Example:
+
+from fintech.models import User
+
+users = User.objects.prefetch_related("accounts")
+
+for user in users:
+    print(user.name)
+    for account in user.accounts.all():
+        print(account.account_number)
+
+
+
+"""F() Expressions
+
+Allows database fields to be referenced directly in queries.
+
+Instead of:"""
+
+acc = Account.objects.get(id=1)
+acc.balance += 1000
+acc.save()
+
+#Django performs:
+
+SELECT balance FROM account;
+UPDATE account SET balance = balance + 1000;
+
+
+"""Q() Objects
+
+Allows complex filtering conditions.By default Django combines filters using AND."""
+
+Merchant.objects.filter(
+    category="Restaurant",
+    is_active=True
+)
+
+
+
+WHERE category='Restaurant'
+AND is_active=True
+
+#OR Condition
+from django.db.models import Q
+
+Merchant.objects.filter(
+    Q(category="Restaurant") |
+    Q(category="Grocery")
+)
+
+#OR Condition
+from django.db.models import Q
+
+Merchant.objects.filter(
+    Q(category="Restaurant") |
+    Q(category="Grocery")
+)
+
+
+
+WHERE category='Restaurant'
+OR category='Grocery'
+AND Condition
+Merchant.objects.filter(
+    Q(category="Restaurant") &
+    Q(is_active=True)
+)
+
+#NOT Condition
+Merchant.objects.filter(
+    ~Q(category="Restaurant")
+)
+
+
+WHERE NOT category='Restaurant'
+Complex Example
+Merchant.objects.filter(
+    (Q(category="Restaurant") |
+     Q(category="Grocery"))
+    &
+    Q(is_active=True)
+)
+
+
+
+"""annotate()
+Adds calculated fields to every object in a queryset.
+The calculated value is not stored in the database.
+Example"""
+
+from django.db.models import Count
+
+users = User.objects.annotate(
+    account_count=Count("accounts")
+)
+
+
+
+SELECT
+user.*,
+COUNT(account.id) AS account_count
+FROM user
+LEFT JOIN account
+ON account.user_id=user.id
+GROUP BY user.id;
+
+
+
+#Average Example
+from django.db.models import Avg
+
+accounts = Account.objects.annotate(
+    avg_transaction=Avg(
+        "transactions__amount"
+    )
+)
+#Max Example
+from django.db.models import Max
+
+accounts = Account.objects.annotate(
+    highest_transaction=Max(
+        "transactions__amount"
+    )
+)
+
+
+Summary:
+
+select_related():
+Uses SQL JOIN
+Reduces queries
+For ForeignKey and OneToOne
+
+prefetch_related():
+Separate queries + Python joining
+For ManyToMany and reverse relations
+
+F():
+References database fields directly
+Avoids race conditions
+Performs calculations in database
+
+Q():
+Enables OR, AND, NOT conditions
+Builds complex queries dynamically
+
+annotate():
+Adds computed fields to queryset objects
+Commonly used with Count, Sum, Avg, Max, Min
+Useful for reporting and dashboards
+
+
+More Details :  https://www.scaler.com/topics/django/q-objects-and-f-objects/
