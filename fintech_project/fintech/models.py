@@ -51,11 +51,11 @@ class User(models.Model):
         ]
         constraints = [
             models.CheckConstraint(
-                check=models.Q(credit_score__gte=300) | models.Q(credit_score__isnull=True),
+                condition=models.Q(credit_score__gte=300) | models.Q(credit_score__isnull=True),
                 name='credit_score_min_300'
             ),
             models.CheckConstraint(
-                check=models.Q(credit_score__lte=850) | models.Q(credit_score__isnull=True),
+                condition=models.Q(credit_score__lte=850) | models.Q(credit_score__isnull=True),
                 name='credit_score_max_850'
             )
         ]
@@ -90,7 +90,7 @@ class Account(models.Model):
         ]
         constraints = [
             models.CheckConstraint(
-                check=models.Q(balance__gte=0),
+                condition=models.Q(balance__gte=0),
                 name='balance_non_negative'
             ),
             models.UniqueConstraint(
@@ -106,8 +106,8 @@ class Account(models.Model):
 
 class Merchant(models.Model):
     name = models.CharField(max_length=255, db_index=True)
-    category = models.CharField(max_length=100)  # e.g., 'restaurant', 'retail', 'travel'
-    country = models.CharField(max_length=2)  # ISO country code
+    category = models.CharField(max_length=100)
+    country = models.CharField(max_length=2)
     is_high_risk = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -141,7 +141,7 @@ class Card(models.Model):
     card_number = models.CharField(max_length=16, unique=True, db_index=True)
     card_type = models.CharField(max_length=20, choices=CARD_TYPES)
     expiry_date = models.DateField()
-    cvv_hash = models.CharField(max_length=64)  # Hashed CVV
+    cvv_hash = models.CharField(max_length=64)
     status = models.CharField(max_length=20, choices=CARD_STATUS, default='active')
     daily_limit = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('1000.00'))
     created_at = models.DateTimeField(auto_now_add=True)
@@ -155,7 +155,7 @@ class Card(models.Model):
         ]
         constraints = [
             models.CheckConstraint(
-                check=models.Q(daily_limit__gte=0),
+                condition=models.Q(daily_limit__gte=0),
                 name='daily_limit_positive'
             )
         ]
@@ -181,8 +181,8 @@ class Transaction(models.Model):
     
     transaction_id = models.CharField(max_length=50, unique=True, db_index=True)
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
-    merchant = models.ForeignKey(Merchant, on_delete=models.CASCADE, related_name='transactions', null=True)
-    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='transactions', null=True)
+    merchant = models.ForeignKey(Merchant, on_delete=models.CASCADE, related_name='transactions', null=True, blank=True)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='transactions', null=True, blank=True)
     
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
@@ -190,7 +190,7 @@ class Transaction(models.Model):
     
     description = models.TextField(blank=True)
     location = models.CharField(max_length=255, blank=True)
-    ip_address = models.GenericIPAddressField(null=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -209,11 +209,11 @@ class Transaction(models.Model):
         ]
         constraints = [
             models.CheckConstraint(
-                check=models.Q(amount__gt=0),
+                condition=models.Q(amount__gt=0),
                 name='amount_positive'
             ),
             models.CheckConstraint(
-                check=(
+                condition=(
                     models.Q(transaction_type='deposit', merchant__isnull=True) |
                     models.Q(transaction_type='withdrawal', merchant__isnull=True) |
                     models.Q(transaction_type='purchase', merchant__isnull=False) |

@@ -10,8 +10,6 @@ import time
 from .models import User, Account, Transaction, Merchant, Card
 
 
-# ============= BASIC VIEWS =============
-
 def health_check(request):
     """Simple health check endpoint"""
     return JsonResponse({
@@ -35,25 +33,17 @@ def stats(request):
     return JsonResponse(stats_data)
 
 
-# ============= TEST VIEWS FOR DEBUG TOOLBAR =============
-
 def test_slow_query(request):
-    """
-    Test view showing N+1 query problem
-    This will generate many duplicate queries (N+1 problem)
-    """
-    # Get initial query count
+    """Test view showing N+1 query problem"""
     initial_query_count = len(connection.queries)
     
-    # This causes N+1 queries - DO NOT use select_related/prefetch_related
     users = User.objects.filter(is_active=True)[:10]
     result = []
     
     for user in users:
-        # Each access causes a new query - this is the N+1 problem!
-        account = user.accounts.first()  # Query per user
+        account = user.accounts.first()
         if account:
-            transactions = account.transactions.all()[:5]  # Query per account
+            transactions = account.transactions.all()[:5]
             total = sum(float(t.amount) for t in transactions)
             result.append({
                 'user': user.email,
@@ -67,7 +57,6 @@ def test_slow_query(request):
                 'transaction_count': 0
             })
     
-    # Calculate query count
     final_query_count = len(connection.queries) - initial_query_count
     
     return render(request, 'fintech/test.html', {
@@ -79,20 +68,11 @@ def test_slow_query(request):
 
 
 def test_optimized_query(request):
-    """
-    Test view showing optimized query with select_related and prefetch_related
-    This will generate only a few queries
-    """
-    # Get initial query count
+    """Test view showing optimized query with select_related"""
     initial_query_count = len(connection.queries)
     
-    # Optimized with select_related and prefetch_related
-    # This loads all data in 2-3 queries instead of N+1
     transactions = Transaction.objects.filter(status='completed').select_related(
-        'account', 
-        'account__user', 
-        'merchant', 
-        'card'
+        'account', 'account__user', 'merchant', 'card'
     )[:30]
     
     result = []
@@ -107,7 +87,6 @@ def test_optimized_query(request):
             'date': txn.created_at.strftime('%Y-%m-%d %H:%M')
         })
     
-    # Calculate query count
     final_query_count = len(connection.queries) - initial_query_count
     
     return render(request, 'fintech/test.html', {
@@ -120,20 +99,17 @@ def test_optimized_query(request):
 
 def comparison_view(request):
     """Show before/after comparison"""
-    
     comparison_data = []
     
     # Test 1: User Account Report (Slow)
     try:
-        # Clear query cache by resetting connection
         connection.queries_log.clear()
         start = time.time()
         
         users = User.objects.filter(is_active=True)[:10]
         slow_result = []
         for user in users:
-            # This causes extra queries
-            account_count = user.accounts.count()  # Query per user
+            account_count = user.accounts.count()
             slow_result.append({'user': user.email, 'accounts': account_count})
         
         slow_time = (time.time() - start) * 1000
@@ -152,28 +128,22 @@ def comparison_view(request):
         connection.queries_log.clear()
         start = time.time()
         
-        # Use prefetch_related to solve N+1
         users = User.objects.filter(is_active=True).prefetch_related('accounts')[:10]
         opt_result = []
         for user in users:
-            # No extra query - data already prefetched
             account_count = len(user.accounts.all())
             opt_result.append({'user': user.email, 'accounts': account_count})
         
         opt_time = (time.time() - start) * 1000
         opt_queries = len(connection.queries)
         
-        # Update with optimized values
         comparison_data[0]['opt_queries'] = opt_queries
         comparison_data[0]['opt_time'] = round(opt_time, 2)
         if opt_time > 0:
             comparison_data[0]['speedup'] = round(comparison_data[0]['slow_time'] / opt_time, 1)
             comparison_data[0]['improvement'] = round(((comparison_data[0]['slow_time'] - opt_time) / comparison_data[0]['slow_time']) * 100, 1)
-        else:
-            comparison_data[0]['speedup'] = 0
-            comparison_data[0]['improvement'] = 0
     except Exception as e:
-        print(f"Error in optimized test: {e}")
+        pass
     
     # Test 3: Transaction History (Slow)
     try:
@@ -183,7 +153,6 @@ def comparison_view(request):
         transactions = Transaction.objects.filter(status='completed')[:20]
         slow_txn_result = []
         for txn in transactions:
-            # Each access causes extra queries
             merchant_name = txn.merchant.name if txn.merchant else 'N/A'
             slow_txn_result.append({'id': txn.transaction_id, 'merchant': merchant_name})
         
@@ -203,11 +172,9 @@ def comparison_view(request):
         connection.queries_log.clear()
         start = time.time()
         
-        # Use select_related to join tables
         transactions = Transaction.objects.filter(status='completed').select_related('merchant')[:20]
         opt_txn_result = []
         for txn in transactions:
-            # No extra query - merchant already loaded
             merchant_name = txn.merchant.name if txn.merchant else 'N/A'
             opt_txn_result.append({'id': txn.transaction_id, 'merchant': merchant_name})
         
@@ -219,11 +186,8 @@ def comparison_view(request):
         if opt_time2 > 0:
             comparison_data[1]['speedup'] = round(comparison_data[1]['slow_time'] / opt_time2, 1)
             comparison_data[1]['improvement'] = round(((comparison_data[1]['slow_time'] - opt_time2) / comparison_data[1]['slow_time']) * 100, 1)
-        else:
-            comparison_data[1]['speedup'] = 0
-            comparison_data[1]['improvement'] = 0
     except Exception as e:
-        print(f"Error in optimized transaction test: {e}")
+        pass
     
     return render(request, 'fintech/comparison.html', {
         'comparison_data': comparison_data
