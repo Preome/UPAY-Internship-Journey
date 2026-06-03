@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+dist/
+build/
+*.spec
+
+# Virtual environment
+venv/
+.env/
+.envrc
+*.venv
+
+# Django / Database
+*.sqlite3
+*.db
+db.sqlite3-journal
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+debug.log
+
+# Media & Static (generated)
+media/
+staticfiles/
+
+# OS
+Desktop.ini
+.DS_Store
+
+# Project specific
+seed_data.py
