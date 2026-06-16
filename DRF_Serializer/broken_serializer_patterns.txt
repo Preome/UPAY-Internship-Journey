@@ -1,0 +1,29 @@
+5 Broken Serializer Patterns — Summary
+
+1. FK field without read_only=True
+   BUG: ForeignKey in ModelSerializer fields without read_only=True causes write
+        errors when the FK is not provided in input.
+   FIX: Add read_only=True or use StringRelatedField(read_only=True).
+
+2. Accessing .validated_data before .is_valid()
+   BUG: Accessing serializer.validated_data without first calling
+        serializer.is_valid() raises an error or returns stale data.
+   FIX: Always call serializer.is_valid() before reading validated_data.
+
+3. Calling .save() on plain Serializer without create()
+   BUG: Plain serializers (serializers.Serializer) don't have a default
+        create() — calling .save() raises NotImplementedError.
+   FIX: Override create() (and update() if needed) on the Serializer class.
+
+4. validate() doesn't return data
+   BUG: Object-level validate() must accept a data dict and return it.
+        Forgetting the return statement causes the serializer to lose the
+        validated data. In DRF 3.14+, an AssertionError is raised.
+   FIX: Always end validate() with "return data".
+
+5. Bulk create via many=True with missing required FK
+   BUG: When using many=True for bulk operations, each item dict must include
+        all required fields (including ForeignKeys). Missing a required FK
+        causes an IntegrityError at the database level.
+   FIX: Ensure every dict in the input list includes all required fields
+        (e.g., "user" for Account).

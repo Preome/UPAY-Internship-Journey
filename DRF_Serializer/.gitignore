@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+*.whl
+.Python
+
+# Virtual environment
+venv/
+.venv/
+env/
+.env/
+
+# Django
+*.sqlite3
+db.sqlite3
+local.sqlite3
+migrations/
+!*/migrations/__init__.py
+/media/
+/static/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.xml
+
+# OS
+Thumbs.db
+*.log
+*.pot
+
+# Environment variables
+.env.local
+.env.production
+
+# Jupyter
+.ipynb_checkpoints/
