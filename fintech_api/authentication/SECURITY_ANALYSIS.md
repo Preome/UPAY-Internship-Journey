@@ -123,17 +123,3 @@ refresh token expires (potentially 30 days).
 
 ---
 
-## 3. Security Recommendations
-
-| Threat | Mitigation | Status |
-|--------|-----------|--------|
-| Token leakage | Short TTL + rotation | ✅ Implemented |
-| No revocation | Blacklist model (jti) | ✅ Implemented |
-| Reuse attack | Rotation + blacklist | ✅ Implemented |
-| Email enumeration | Generic error messages | ✅ Implemented |
-| Algorithm confusion | Pin algorithm in settings | ✅ Configured |
-| CSRF (non-browser) | Token in Auth header, not cookie | ✅ N/A (Bearer auth) |
-| Weak secret | Environment-based SECRET_KEY | 🔧 Production setup |
-| Key rotation | Versioned keys | 🔧 Manual process |
-| Rate limiting | Per-IP throttling on auth endpoints | 🔧 Add with DRF throttling |
-| Audit logging | Log all auth events | 🔧 Add structured logging |

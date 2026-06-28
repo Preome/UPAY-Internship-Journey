@@ -90,16 +90,3 @@ Django REST Framework API with full JWT authentication, session tracking, custom
 
 
 
-
-## Auth Endpoints
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/auth/register/` | No | Register → JWT pair + session |
-| POST | `/api/auth/login/` | No | Login (email/username) → JWT pair + session |
-| POST | `/api/auth/logout/` | Bearer | Blacklists token, deactivates session |
-| POST | `/api/auth/refresh/` | No | Rotates refresh token, issues new pair |
-| POST | `/api/auth/revoke/` | Bearer | Explicitly revoke a refresh token |
-| GET | `/api/auth/sessions/` | Bearer | List active sessions |
-| DELETE | `/api/auth/sessions/<id>/` | Bearer | Revoke specific session |
-| DELETE | `/api/auth/sessions/` | Bearer | Revoke all sessions |
