@@ -13,15 +13,9 @@ router.register(r'accounts', AccountViewSet, basename='account')
 router.register(r'transactions', TransactionViewSet, basename='transaction')
 
 urlpatterns = [
-    
     path('api/', include(router.urls)),
-    
-   
     path('api-compare/accounts-api/', AccountAPIView.as_view(), name='account-api'),
     path('api-compare/accounts-generic/', AccountGenericView.as_view(), name='account-generic'),
-    
-    
-    path('api-auth/', include('rest_framework.urls')),
 ]
 
 

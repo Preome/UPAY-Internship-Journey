@@ -6,8 +6,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('accounts.urls')),  # Include all bank API URLs
-    path('api-auth/', include('rest_framework.urls')),  # DRF login/logout for browsable API
+    path('api/auth/', include('authentication.urls')),
+    path('', include('accounts.urls')),
+    path('api-auth/', include('rest_framework.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,2339 +1,471 @@
 {
   "info": {
     "_postman_id": "be9a877c-3b5e-4cee-833a-0bc1fed13676",
-    "name": "Fintech",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "49547915",
-    "_collection_link": "https://go.postman.co/collection/49547915-be9a877c-3b5e-4cee-833a-0bc1fed13676?source=collection_link"
+    "name": "Fintech API — Auth Comparison (Basic vs JWT)",
+    "description": "Side-by-side comparison of Basic Auth vs JWT Auth in Postman. Same CRUD endpoints called with both auth methods.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "get account",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "admin123",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "admin",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"account_number\": \"ACC-MANUAL-01\",\r\n    \"account_type\": \"SAVINGS\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            ""
-          ]
-        }
-      },
-      "response": [
+      "name": "1. JWT Auth Flow",
+      "item": [
         {
-          "name": "New Request",
-          "originalRequest": {
+          "name": "Register",
+          "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
+              { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"account_number\": \"ACC-MANUAL-01\",\r\n    \"account_type\": \"SAVINGS\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n    \"email\": \"newuser@test.com\",\n    \"username\": \"newuser\",\n    \"password\": \"testpass123\",\n    \"password2\": \"testpass123\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8000/api/accounts/",
+              "raw": "http://localhost:8000/api/auth/register/",
               "protocol": "http",
-              "host": [
-                "localhost"
-              ],
+              "host": ["localhost"],
               "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                ""
-              ]
-            }
-          },
-          "status": "Created",
-          "code": 201,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 06:09:32 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "215"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"id\": 6,\n    \"account_number\": \"ACC-MANUAL-01\",\n    \"account_type\": \"SAVINGS\",\n    \"balance\": \"0.00\",\n    \"is_frozen\": false,\n    \"user_name\": \"admin\",\n    \"created_at\": \"2026-06-03T06:09:32Z\",\n    \"updated_at\": \"2026-06-03T06:09:32Z\",\n    \"transaction_count\": 0\n}"
-        }
-      ]
-    },
-    {
-      "name": "create account",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"account_number\": \"ACC-TESTUSER-01\",\r\n    \"account_type\": \"SAVINGS\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+              "path": ["api", "auth", "register", ""]
             }
           }
         },
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            ""
-          ]
-        }
-      },
-      "response": [
         {
-          "name": "New Request",
-          "originalRequest": {
+          "name": "Login (get JWT tokens)",
+          "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"account_number\": \"ACC-TESTUSER-01\",\r\n    \"account_type\": \"SAVINGS\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n    \"email\": \"newuser@test.com\",\n    \"password\": \"testpass123\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8000/api/accounts/",
+              "raw": "http://localhost:8000/api/auth/login/",
               "protocol": "http",
-              "host": [
-                "localhost"
-              ],
+              "host": ["localhost"],
               "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                ""
-              ]
+              "path": ["api", "auth", "login", ""]
             }
           },
-          "status": "Created",
-          "code": 201,
-          "_postman_previewlanguage": null,
-          "header": [
+          "response": [
             {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 07:49:08 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "220"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"id\": 7,\n    \"account_number\": \"ACC-TESTUSER-01\",\n    \"account_type\": \"SAVINGS\",\n    \"balance\": \"0.00\",\n    \"is_frozen\": false,\n    \"user_name\": \"testuser\",\n    \"created_at\": \"2026-06-03T07:49:08Z\",\n    \"updated_at\": \"2026-06-03T07:49:08Z\",\n    \"transaction_count\": 0\n}"
-        }
-      ]
-    },
-    {
-      "name": "New Request",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
+              "name": "Login Response (JWT)",
+              "status": "200",
+              "code": 200,
+              "body": "{\n    \"user\": {\n        \"id\": 5,\n        \"email\": \"newuser@test.com\",\n        \"username\": \"newuser\"\n    },\n    \"access\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"session\": {\n        \"id\": 1,\n        \"device\": \"PostmanRuntime/7.36.0\",\n        \"ip_address\": \"127.0.0.1\"\n    }\n}"
             }
           ]
         },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/3/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            "3",
-            ""
-          ]
-        }
-      },
-      "response": [
         {
-          "name": "New Request",
-          "originalRequest": {
+          "name": "Refresh Token (rotation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refresh\": \"<paste_refresh_token_here>\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/auth/refresh/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "refresh", ""]
+            }
+          }
+        },
+        {
+          "name": "List Active Sessions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token>", "type": "string" }
+              ]
+            },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/accounts/3/",
+              "raw": "http://localhost:8000/api/auth/sessions/",
               "protocol": "http",
-              "host": [
-                "localhost"
-              ],
+              "host": ["localhost"],
               "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                "3",
-                ""
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 08:34:25 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "215"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"id\": 3,\n    \"account_number\": \"ACC003\",\n    \"account_type\": \"SAVINGS\",\n    \"balance\": \"10000.00\",\n    \"is_frozen\": false,\n    \"user_name\": \"testuser\",\n    \"created_at\": \"2026-06-03T05:48:24Z\",\n    \"updated_at\": \"2026-06-03T05:48:24Z\",\n    \"transaction_count\": 1\n}"
-        }
-      ]
-    },
-    {
-      "name": "type changed",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "PUT",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"account_number\":\"ACC003\",\"account_type\":\"BUSINESS\"}",
-          "options": {
-            "raw": {
-              "language": "json"
+              "path": ["api", "auth", "sessions", ""]
             }
           }
         },
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/3/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            "3",
-            ""
-          ]
-        }
-      },
-      "response": [
         {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"account_number\":\"ACC003\",\"account_type\":\"BUSINESS\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:8000/api/accounts/3/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                "3",
-                ""
+          "name": "Revoke Session by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token>", "type": "string" }
               ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 08:40:28 GMT"
             },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "216"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"id\": 3,\n    \"account_number\": \"ACC003\",\n    \"account_type\": \"BUSINESS\",\n    \"balance\": \"10000.00\",\n    \"is_frozen\": false,\n    \"user_name\": \"testuser\",\n    \"created_at\": \"2026-06-03T05:48:24Z\",\n    \"updated_at\": \"2026-06-03T08:40:28Z\",\n    \"transaction_count\": 1\n}"
-        }
-      ]
-    },
-    {
-      "name": "reverted",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "PATCH",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"account_type\":\"SAVINGS\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/3/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            "3",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"account_type\":\"SAVINGS\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:8000/api/accounts/3/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                "3",
-                ""
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 08:42:50 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "215"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"id\": 3,\n    \"account_number\": \"ACC003\",\n    \"account_type\": \"SAVINGS\",\n    \"balance\": \"10000.00\",\n    \"is_frozen\": false,\n    \"user_name\": \"testuser\",\n    \"created_at\": \"2026-06-03T05:48:24Z\",\n    \"updated_at\": \"2026-06-03T08:42:50Z\",\n    \"transaction_count\": 1\n}"
-        }
-      ]
-    },
-    {
-      "name": "Create Account",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "admin123",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "admin",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"account_number\": \"ACC-MANUAL-05\",\r\n    \"account_type\": \"SAVINGS\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "Create Account",
-          "originalRequest": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"account_number\": \"ACC-MANUAL-05\",\r\n    \"account_type\": \"SAVINGS\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:8000/api/accounts/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                ""
-              ]
-            }
-          },
-          "status": "Created",
-          "code": 201,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 08:51:55 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "215"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"id\": 8,\n    \"account_number\": \"ACC-MANUAL-05\",\n    \"account_type\": \"SAVINGS\",\n    \"balance\": \"0.00\",\n    \"is_frozen\": false,\n    \"user_name\": \"admin\",\n    \"created_at\": \"2026-06-03T08:51:54Z\",\n    \"updated_at\": \"2026-06-03T08:51:54Z\",\n    \"transaction_count\": 0\n}"
-        }
-      ]
-    },
-    {
-      "name": "Delete Account",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "admin123",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "admin",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/6/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            "6",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "Delete Account",
-          "originalRequest": {
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/accounts/6/",
+              "raw": "http://localhost:8000/api/auth/sessions/1/",
               "protocol": "http",
-              "host": [
-                "localhost"
-              ],
+              "host": ["localhost"],
               "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                "6",
-                ""
-              ]
-            }
-          },
-          "status": "No Content",
-          "code": 204,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 08:55:15 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "0"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": null
-        }
-      ]
-    },
-    {
-      "name": "freeze",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"reason\":\"Test freeze\"}",
-          "options": {
-            "raw": {
-              "language": "json"
+              "path": ["api", "auth", "sessions", "1", ""]
             }
           }
         },
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/3/freeze/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            "3",
-            "freeze",
-            ""
-          ]
-        }
-      },
-      "response": [
         {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"reason\":\"Test freeze\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:8000/api/accounts/3/freeze/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                "3",
-                "freeze",
-                ""
+          "name": "Revoke All Sessions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token>", "type": "string" }
               ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 08:59:13 GMT"
             },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "POST, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "83"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"status\": \"frozen\",\n    \"account_id\": 3,\n    \"account_number\": \"ACC003\",\n    \"reason\": \"Test freeze\"\n}"
-        }
-      ]
-    },
-    {
-      "name": "already frozen",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"reason\":\"Test freeze\"}"
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/3/freeze/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            "3",
-            "freeze",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"reason\":\"Test freeze\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8000/api/accounts/3/freeze/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                "3",
-                "freeze",
-                ""
-              ]
-            }
-          },
-          "status": "Bad Request",
-          "code": 400,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:00:20 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "POST, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "37"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"error\": \"Account is already frozen\"\n}"
-        }
-      ]
-    },
-    {
-      "name": "account statement",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8000/api/accounts/3/statement/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts",
-            "3",
-            "statement",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "GET",
+            "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/accounts/3/statement/",
+              "raw": "http://localhost:8000/api/auth/sessions/",
               "protocol": "http",
-              "host": [
-                "localhost"
-              ],
+              "host": ["localhost"],
               "port": "8000",
-              "path": [
-                "api",
-                "accounts",
-                "3",
-                "statement",
-                ""
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:01:51 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "319"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"account_id\": 3,\n    \"account_number\": \"ACC003\",\n    \"account_type\": \"SAVINGS\",\n    \"current_balance\": 10000,\n    \"is_frozen\": true,\n    \"transactions\": [\n        {\n            \"id\": 3,\n            \"transaction_type\": \"DEPOSIT\",\n            \"amount\": \"10000.00\",\n            \"description\": \"Salary deposit\",\n            \"status\": \"COMPLETED\",\n            \"reference_number\": \"TXN-USR00001\",\n            \"created_at\": \"2026-06-03T05:48:24Z\",\n            \"account\": 3\n        }\n    ]\n}"
-        }
-      ]
-    },
-    {
-      "name": "get transaction",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8000/api/transactions",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "transactions"
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8000/api/transactions",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "transactions"
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:02:38 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "437"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"count\": 2,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"id\": 4,\n            \"transaction_type\": \"DEPOSIT\",\n            \"amount\": \"75000.00\",\n            \"description\": \"Business funding\",\n            \"status\": \"COMPLETED\",\n            \"reference_number\": \"TXN-USR00002\",\n            \"created_at\": \"2026-06-03T05:48:24Z\",\n            \"account\": 4\n        },\n        {\n            \"id\": 3,\n            \"transaction_type\": \"DEPOSIT\",\n            \"amount\": \"10000.00\",\n            \"description\": \"Salary deposit\",\n            \"status\": \"COMPLETED\",\n            \"reference_number\": \"TXN-USR00001\",\n            \"created_at\": \"2026-06-03T05:48:24Z\",\n            \"account\": 3\n        }\n    ]\n}"
-        }
-      ]
-    },
-    {
-      "name": "Deposit transaction",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"account\":3,\"transaction_type\":\"DEPOSIT\",\"amount\":500,\"description\":\"Deposit\"}",
-          "options": {
-            "raw": {
-              "language": "json"
+              "path": ["api", "auth", "sessions", ""]
             }
           }
         },
-        "url": {
-          "raw": "http://localhost:8000/api/transactions/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "transactions",
-            ""
-          ]
-        }
-      },
-      "response": [
         {
-          "name": "Deposit transaction",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token>", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\"account\":3,\"transaction_type\":\"DEPOSIT\",\"amount\":500,\"description\":\"Deposit\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n    \"refresh\": \"<paste_refresh_token>\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/auth/logout/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "logout", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. COMPARE: Basic Auth (Token) — CRUD",
+      "item": [
+        {
+          "name": "List Accounts (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Account (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"account_number\": \"ACC-BASIC-01\",\n    \"account_type\": \"SAVINGS\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", ""]
+            }
+          }
+        },
+        {
+          "name": "Freeze Account (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reason\": \"Suspicious activity\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/1/freeze/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", "1", "freeze", ""]
+            }
+          }
+        },
+        {
+          "name": "Account Statement (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/1/statement/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", "1", "statement", ""]
+            }
+          }
+        },
+        {
+          "name": "Deposit (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"account\": 1,\n    \"transaction_type\": \"DEPOSIT\",\n    \"amount\": 1000.00,\n    \"description\": \"Basic Auth deposit\"\n}"
             },
             "url": {
               "raw": "http://localhost:8000/api/transactions/",
               "protocol": "http",
-              "host": [
-                "localhost"
-              ],
+              "host": ["localhost"],
               "port": "8000",
-              "path": [
-                "api",
-                "transactions",
-                ""
-              ]
+              "path": ["api", "transactions", ""]
             }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:19:18 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "621"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"count\": 3,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"id\": 7,\n            \"transaction_type\": \"WITHDRAWAL\",\n            \"amount\": \"100.00\",\n            \"description\": \"ATM\",\n            \"status\": \"COMPLETED\",\n            \"reference_number\": \"TXN-526AA1C863\",\n            \"created_at\": \"2026-06-03T09:18:14Z\",\n            \"account\": 4\n        },\n        {\n            \"id\": 4,\n            \"transaction_type\": \"DEPOSIT\",\n            \"amount\": \"75000.00\",\n            \"description\": \"Business funding\",\n            \"status\": \"COMPLETED\",\n            \"reference_number\": \"TXN-USR00002\",\n            \"created_at\": \"2026-06-03T05:48:24Z\",\n            \"account\": 4\n        },\n        {\n            \"id\": 3,\n            \"transaction_type\": \"DEPOSIT\",\n            \"amount\": \"10000.00\",\n            \"description\": \"Salary deposit\",\n            \"status\": \"COMPLETED\",\n            \"reference_number\": \"TXN-USR00001\",\n            \"created_at\": \"2026-06-03T05:48:24Z\",\n            \"account\": 3\n        }\n    ]\n}"
-        }
-      ]
-    },
-    {
-      "name": "withdrawal transaction",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"account\":4,\"transaction_type\":\"WITHDRAWAL\",\"amount\":100,\"description\":\"ATM\"}"
         },
-        "url": {
-          "raw": "http://localhost:8000/api/transactions/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "transactions",
-            ""
-          ]
-        }
-      },
-      "response": [
         {
-          "name": "withdrawal transaction",
-          "originalRequest": {
+          "name": "Reverse Transaction (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
+              { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"account\":4,\"transaction_type\":\"WITHDRAWAL\",\"amount\":100,\"description\":\"ATM\"}"
+              "raw": "{\n    \"reason\": \"Incorrect amount\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8000/api/transactions/",
+              "raw": "http://localhost:8000/api/transactions/1/reverse/",
               "protocol": "http",
-              "host": [
-                "localhost"
-              ],
+              "host": ["localhost"],
               "port": "8000",
-              "path": [
-                "api",
-                "transactions",
-                ""
-              ]
-            }
-          },
-          "status": "Created",
-          "code": 201,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:18:14 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "183"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"id\": 7,\n    \"transaction_type\": \"WITHDRAWAL\",\n    \"amount\": \"100.00\",\n    \"description\": \"ATM\",\n    \"status\": \"COMPLETED\",\n    \"reference_number\": \"TXN-526AA1C863\",\n    \"created_at\": \"2026-06-03T09:18:14Z\",\n    \"account\": 4\n}"
-        }
-      ]
-    },
-    {
-      "name": "Transfer",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"account\":3,\"transaction_type\":\"TRANSFER\",\"amount\":200,\"description\":\"Transfer\"}"
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/transactions/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "transactions",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "Transfer",
-          "originalRequest": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"account\":3,\"transaction_type\":\"TRANSFER\",\"amount\":200,\"description\":\"Transfer\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8000/api/transactions/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "transactions",
-                ""
-              ]
-            }
-          },
-          "status": "Created",
-          "code": 201,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:22:46 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "187"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"id\": 10,\n    \"transaction_type\": \"TRANSFER\",\n    \"amount\": \"200.00\",\n    \"description\": \"Transfer\",\n    \"status\": \"COMPLETED\",\n    \"reference_number\": \"TXN-CEA9469978\",\n    \"created_at\": \"2026-06-03T09:22:46Z\",\n    \"account\": 3\n}"
-        }
-      ]
-    },
-    {
-      "name": "reverse",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"reason\":\"Customer request\"}"
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/transactions/3/reverse/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "transactions",
-            "3",
-            "reverse",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "reverse",
-          "originalRequest": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"reason\":\"Customer request\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8000/api/transactions/3/reverse/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "transactions",
-                "3",
-                "reverse",
-                ""
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:25:59 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "POST, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "173"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"status\": \"reversed\",\n    \"original_transaction\": \"TXN-USR00001\",\n    \"reversal_transaction\": \"REV-TXN-USR00001\",\n    \"message\": \"Transaction reversed successfully. Reason: Customer request\"\n}"
-        }
-      ]
-    },
-    {
-      "name": "New Request",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:8000/api-compare/accounts-api/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api-compare",
-            "accounts-api",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "http://localhost:8000/api-compare/accounts-api/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api-compare",
-                "accounts-api",
-                ""
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:30:12 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "301"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "[\n    {\n        \"id\": 7,\n        \"account_number\": \"ACC-TESTUSER-01\",\n        \"account_type\": \"SAVINGS\",\n        \"balance\": \"0.00\",\n        \"is_frozen\": false\n    },\n    {\n        \"id\": 4,\n        \"account_number\": \"ACC004\",\n        \"account_type\": \"BUSINESS\",\n        \"balance\": \"74900.00\",\n        \"is_frozen\": false\n    },\n    {\n        \"id\": 3,\n        \"account_number\": \"ACC003\",\n        \"account_type\": \"SAVINGS\",\n        \"balance\": \"800.00\",\n        \"is_frozen\": true\n    }\n]"
-        }
-      ]
-    },
-    {
-      "name": "New Request",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:8000/api-compare/accounts-generic/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api-compare",
-            "accounts-generic",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "http://localhost:8000/api-compare/accounts-generic/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api-compare",
-                "accounts-generic",
-                ""
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:31:11 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "351"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"count\": 3,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"id\": 7,\n            \"account_number\": \"ACC-TESTUSER-01\",\n            \"account_type\": \"SAVINGS\",\n            \"balance\": \"0.00\",\n            \"is_frozen\": false\n        },\n        {\n            \"id\": 4,\n            \"account_number\": \"ACC004\",\n            \"account_type\": \"BUSINESS\",\n            \"balance\": \"74900.00\",\n            \"is_frozen\": false\n        },\n        {\n            \"id\": 3,\n            \"account_number\": \"ACC003\",\n            \"account_type\": \"SAVINGS\",\n            \"balance\": \"800.00\",\n            \"is_frozen\": true\n        }\n    ]\n}"
-        }
-      ]
-    },
-    {
-      "name": "New Request",
-      "request": {
-        "method": "GET",
-        "header": []
-      },
-      "response": [
-        {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "http://localhost:8000/api-compare/accounts/999/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api-compare",
-                "accounts",
-                "999",
-                ""
-              ]
-            }
-          },
-          "status": "Not Found",
-          "code": 404,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:32:53 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "text/html; charset=utf-8"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "5229"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n        <title>Page not found at /api-compare/accounts/999/</title>\n        <meta name=\"robots\" content=\"NONE,NOARCHIVE\">\n        <style>\n    html * { padding:0; margin:0; }\n    body * { padding:10px 20px; }\n    body * * { padding:0; }\n    body { font-family: sans-serif; background:#eee; color:#000; }\n    body > :where(header, main, footer) { border-bottom:1px solid #ddd; }\n    h1 { font-weight:normal; margin-bottom:.4em; }\n    h1 small { font-size:60%; color:#666; font-weight:normal; }\n    table { border:none; border-collapse: collapse; width:100%; }\n    td, th { vertical-align:top; padding:2px 3px; }\n    th { width:12em; text-align:right; color:#666; padding-right:.5em; }\n    #info { background:#f6f6f6; }\n    #info ol { margin: 0.5em 4em; }\n    #info ol li { font-family: monospace; }\n    #summary { background: #ffc; }\n    #explanation { background:#eee; border-bottom: 0px none; }\n    pre.exception_value { font-family: sans-serif; color: #575757; font-size: 1.5em; margin: 10px 0 10px 0; }\n  </style>\n    </head>\n    <body>\n        <header id=\"summary\">\n            <h1>Page not found \n                <small>(404)</small>\n            </h1>\n            <table class=\"meta\">\n                <tr>\n                    <th scope=\"row\">Request Method:</th>\n                    <td>GET</td>\n                </tr>\n                <tr>\n                    <th scope=\"row\">Request URL:</th>\n                    <td>http://localhost:8000/api-compare/accounts/999/</td>\n                </tr>\n            </table>\n        </header>\n        <main id=\"info\">\n            <p>\n      Using the URLconf defined in \n                <code>fintech_api.urls</code>,\n      Django tried these URL patterns, in this order:\n            </p>\n            <ol>\n                <li>\n                    <code>\n                admin/\n                \n              </code>\n                </li>\n                <li>\n                    <code>\n                \n                \n              </code>\n                    <code>\n                api/\n                \n              </code>\n                </li>\n                <li>\n                    <code>\n                \n                \n              </code>\n                    <code>\n                api-compare/accounts-api/\n                [name='account-api']\n              </code>\n                </li>\n                <li>\n                    <code>\n                \n                \n              </code>\n                    <code>\n                api-compare/accounts-generic/\n                [name='account-generic']\n              </code>\n                </li>\n                <li>\n                    <code>\n                \n                \n              </code>\n                    <code>\n                api-auth/\n                \n              </code>\n                </li>\n                <li>\n                    <code>\n                \n                \n              </code>\n                    <code>\n                django/accounts/\n                [name='django_account_list']\n              </code>\n                </li>\n                <li>\n                    <code>\n                \n                \n              </code>\n                    <code>\n                django/accounts/create/\n                [name='django_account_create']\n              </code>\n                </li>\n                <li>\n                    <code>\n                \n                \n              </code>\n                    <code>\n                django/accounts/&lt;int:pk&gt;/update/\n                [name='django_account_update']\n              </code>\n                </li>\n                <li>\n                    <code>\n                \n                \n              </code>\n                    <code>\n                django/accounts/&lt;int:pk&gt;/delete/\n                [name='django_account_delete']\n              </code>\n                </li>\n                <li>\n                    <code>\n                \n                \n              </code>\n                    <code>\n                django/dashboard/\n                [name='django_dashboard']\n              </code>\n                </li>\n                <li>\n                    <code>\n                api-auth/\n                \n              </code>\n                </li>\n                <li>\n                    <code>\n                ^static/(?P&lt;path&gt;.*)$\n                \n              </code>\n                </li>\n                <li>\n                    <code>\n                ^media/(?P&lt;path&gt;.*)$\n                \n              </code>\n                </li>\n            </ol>\n            <p>\n        \n          The current path, \n                <code>api-compare/accounts/999/</code>,\n        \n        didn’t match any of these.\n            </p>\n        </main>\n        <footer id=\"explanation\">\n            <p>\n      You’re seeing this error because you have \n                <code>DEBUG = True</code> in\n      your Django settings file. Change that to\n                <code>False</code>, and Django\n      will display a standard 404 page.\n            </p>\n        </footer>\n    </body>\n</html>"
-        }
-      ]
-    },
-    {
-      "name": "New Request",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"account\":4,\"transaction_type\":\"WITHDRAWAL\",\"amount\":9999999,\"description\":\"Overdraft\"}",
-          "options": {
-            "raw": {
-              "language": "json"
+              "path": ["api", "transactions", "1", "reverse", ""]
             }
           }
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/transactions/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "transactions",
-            ""
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "New Request",
-          "originalRequest": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"account\":4,\"transaction_type\":\"WITHDRAWAL\",\"amount\":9999999,\"description\":\"Overdraft\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:8000/api/transactions/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "transactions",
-                ""
-              ]
-            }
-          },
-          "status": "Bad Request",
-          "code": 400,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:34:20 GMT"
-            },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "24"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
-            }
-          ],
-          "cookie": [],
-          "body": "[\n    \"Insufficient balance\"\n]"
         }
       ]
     },
     {
-      "name": "New Request",
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "username",
-              "value": "testuser",
-              "type": "string"
-            },
-            {
-              "key": "password",
-              "value": "test123",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8000/api/accounts",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8000",
-          "path": [
-            "api",
-            "accounts"
-          ]
-        }
-      },
-      "response": [
+      "name": "3. COMPARE: JWT Bearer Auth — Same CRUD",
+      "item": [
         {
-          "name": "New Request",
-          "originalRequest": {
+          "name": "List Accounts (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/accounts",
+              "raw": "http://localhost:8000/api/accounts/",
               "protocol": "http",
-              "host": [
-                "localhost"
-              ],
+              "host": ["localhost"],
               "port": "8000",
-              "path": [
-                "api",
-                "accounts"
+              "path": ["api", "accounts", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Account (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
               ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"account_number\": \"ACC-JWT-01\",\n    \"account_type\": \"CHECKING\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", ""]
             }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": null,
-          "header": [
-            {
-              "key": "Date",
-              "value": "Wed, 03 Jun 2026 09:36:44 GMT"
+          }
+        },
+        {
+          "name": "Freeze Account (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
             },
-            {
-              "key": "Server",
-              "value": "WSGIServer/0.2 CPython/3.13.13"
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reason\": \"Fraud suspicion\"\n}"
             },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Vary",
-              "value": "Accept, Cookie"
-            },
-            {
-              "key": "Allow",
-              "value": "GET, POST, HEAD, OPTIONS"
-            },
-            {
-              "key": "X-Frame-Options",
-              "value": "DENY"
-            },
-            {
-              "key": "Content-Length",
-              "value": "351"
-            },
-            {
-              "key": "X-Content-Type-Options",
-              "value": "nosniff"
-            },
-            {
-              "key": "Referrer-Policy",
-              "value": "same-origin"
-            },
-            {
-              "key": "Cross-Origin-Opener-Policy",
-              "value": "same-origin"
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/1/freeze/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", "1", "freeze", ""]
             }
-          ],
-          "cookie": [],
-          "body": "{\n    \"count\": 3,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"id\": 7,\n            \"account_number\": \"ACC-TESTUSER-01\",\n            \"account_type\": \"SAVINGS\",\n            \"balance\": \"0.00\",\n            \"is_frozen\": false\n        },\n        {\n            \"id\": 4,\n            \"account_number\": \"ACC004\",\n            \"account_type\": \"BUSINESS\",\n            \"balance\": \"74900.00\",\n            \"is_frozen\": false\n        },\n        {\n            \"id\": 3,\n            \"account_number\": \"ACC003\",\n            \"account_type\": \"SAVINGS\",\n            \"balance\": \"800.00\",\n            \"is_frozen\": true\n        }\n    ]\n}"
+          }
+        },
+        {
+          "name": "Account Statement (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/1/statement/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", "1", "statement", ""]
+            }
+          }
+        },
+        {
+          "name": "Deposit (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"account\": 1,\n    \"transaction_type\": \"DEPOSIT\",\n    \"amount\": 500.00,\n    \"description\": \"JWT Auth deposit\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/transactions/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "transactions", ""]
+            }
+          }
+        },
+        {
+          "name": "Reverse Transaction (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reason\": \"Wrong amount entered\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/transactions/1/reverse/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "transactions", "1", "reverse", ""]
+            }
+          }
         }
       ]
     }

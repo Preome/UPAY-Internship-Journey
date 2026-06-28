@@ -31,8 +31,12 @@ INSTALLED_APPS = [
     
     'rest_framework',
     
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    
     
     'accounts',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -78,6 +82,11 @@ DATABASES = {
 
 
 
+
+AUTHENTICATION_BACKENDS = [
+    'authentication.auth_backends.EmailAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -135,6 +144,7 @@ REST_FRAMEWORK = {
     
    
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
@@ -169,6 +179,22 @@ REST_FRAMEWORK = {
 
 
 
+
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'TOKEN_OBTAIN_SERIALIZER': 'authentication.serializers.CustomTokenObtainPairSerializer',
+    'TOKEN_REFRESH_SERIALIZER': 'authentication.serializers.TokenRefreshWithRotationSerializer',
+}
 
 
 MAX_WITHDRAWAL_AMOUNT = 10000
