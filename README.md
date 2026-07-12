@@ -11,8 +11,7 @@ Django REST Framework API with JWT authentication, custom permission classes, ro
 | 1 | Custom permission classes — 8 reusable classes   | [`accounts/permissions.py`](fintech_api/accounts/permissions.py)|
 | 2 | RBAC system — Admin, Agent, Customer roles with enforced endpoint access via JWT claims | [`accounts/permissions.py`](fintech_api/accounts/permissions.py), [`authentication/models.py`](fintech_api/authentication/models.py) |
 | 3 | Row-level security — users scoped to their own Transactions and Accounts only | [`accounts/views.py`](fintech_api/accounts/views.py) |
-| 4 | Permission matrix — full endpoint x role table  |  
-[`PERMISSION_MATRIX.md`](fintech_api/PERMISSION_MATRIX.md)
+| 4 | Permission matrix — full endpoint x role table  | [`PERMISSION_MATRIX.md`](fintech_api/PERMISSION_MATRIX.md)
 ---
 
 ## Task 1: Built-in DRF Permissions + django-guardian
@@ -242,21 +241,21 @@ This enables scenarios where an agent needs temporary access to a specific custo
 
 | Endpoint | Method | Admin | Agent | Customer | Permission Class |
 |----------|--------|-------|-------|----------|-----------------|
-| `POST /api/auth/register/` | POST | Y | Y | Y | `AllowAny` |
-| `POST /api/auth/login/` | POST | Y | Y | Y | `AllowAny` |
-| `POST /api/auth/logout/` | POST | Y | Y | Y | `IsAuthenticated` |
-| `POST /api/auth/refresh/` | POST | Y | Y | Y | `AllowAny` |
+| `POST /api/auth/register/` | POST | Yes | Yes | Yes | `AllowAny` |
+| `POST /api/auth/login/` | POST | Yes | Yes | Yes | `AllowAny` |
+| `POST /api/auth/logout/` | POST | Yes | Yes | Yes | `IsAuthenticated` |
+| `POST /api/auth/refresh/` | POST | Yes | Yes | Yes | `AllowAny` |
 | `GET /api/accounts/` | GET | all | all | own | `IsAuthenticated` |
-| `POST /api/accounts/` | POST | Y | Y | Y | `IsAuthenticated` |
-| `GET /api/accounts/<id>/` | GET | Y | Y | owner | `IsAccountOwnerOrAdmin` |
-| `PUT/PATCH /api/accounts/<id>/` | PUT | Y | denied | owner | `IsAccountOwnerOrAdmin` |
-| `DELETE /api/accounts/<id>/` | DELETE | Y | denied | owner | `IsAccountOwnerOrAdmin` |
-| `POST /api/accounts/<id>/freeze/` | POST | Y | Y | denied | `IsAdmin \| IsAgent` |
-| `GET /api/accounts/<id>/statement/` | GET | Y | Y | owner | `IsAccountOwnerOrAdmin` |
+| `POST /api/accounts/` | POST | Yes | Yes | Yes | `IsAuthenticated` |
+| `GET /api/accounts/<id>/` | GET | Yes | Yes | owner | `IsAccountOwnerOrAdmin` |
+| `PUT/PATCH /api/accounts/<id>/` | PUT | Yes | denied | owner | `IsAccountOwnerOrAdmin` |
+| `DELETE /api/accounts/<id>/` | DELETE | Yes | denied | owner | `IsAccountOwnerOrAdmin` |
+| `POST /api/accounts/<id>/freeze/` | POST | Yes | Yes | denied | `IsAdmin \| IsAgent` |
+| `GET /api/accounts/<id>/statement/` | GET | Yes | Yes | owner | `IsAccountOwnerOrAdmin` |
 | `GET /api/transactions/` | GET | all | customer txns | own | `IsOwnerOrReadOnly` |
-| `POST /api/transactions/` | POST | Y | Y | own | `IsOwnerOrReadOnly` |
-| `GET/PUT/DELETE /api/transactions/<id>/` | ALL | Y | read-only | owner | `IsOwnerOrReadOnly` |
-| `POST /api/transactions/<id>/reverse/` | POST | Y | denied | owner | `IsOwnerOrReadOnly` |
+| `POST /api/transactions/` | POST | Yes | Yes | own | `IsOwnerOrReadOnly` |
+| `GET/PUT/DELETE /api/transactions/<id>/` | ALL | Yes | read-only | owner | `IsOwnerOrReadOnly` |
+| `POST /api/transactions/<id>/reverse/` | POST | Yes | denied | owner | `IsOwnerOrReadOnly` |
 
 Full matrix with all HTTP methods, anonymous access, and comparison endpoints: [`PERMISSION_MATRIX.md`](fintech_api/PERMISSION_MATRIX.md)
 
