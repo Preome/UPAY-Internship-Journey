@@ -36,6 +36,40 @@ class BlacklistedToken(models.Model):
         return cls.objects.filter(expires_at__lte=timezone.now()).delete()
 
 
+class Role(models.Model):
+    ADMIN = 'admin'
+    AGENT = 'agent'
+    CUSTOMER = 'customer'
+
+    ROLE_CHOICES = (
+        (ADMIN, 'Admin'),
+        (AGENT, 'Agent'),
+        (CUSTOMER, 'Customer'),
+    )
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='role_profile',
+    )
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=CUSTOMER)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'user_roles'
+
+    def __str__(self):
+        return f"{self.user.username} ({self.role})"
+
+    @classmethod
+    def get_role_for_user(cls, user):
+        if user.is_superuser:
+            return cls.ADMIN
+        profile = cls.objects.filter(user=user).first()
+        return profile.role if profile else cls.CUSTOMER
+
+
 class ActiveSession(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

@@ -71,9 +71,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['role'] = 'admin' if user.is_superuser else (
-            'staff' if user.is_staff else 'user'
-        )
+        from .models import Role
+        token['role'] = Role.get_role_for_user(user)
         token['email'] = user.email
         from accounts.models import Account
         account_ids = list(

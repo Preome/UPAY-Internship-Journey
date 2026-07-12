@@ -17,13 +17,3 @@ urlpatterns = [
     path('api-compare/accounts-api/', AccountAPIView.as_view(), name='account-api'),
     path('api-compare/accounts-generic/', AccountGenericView.as_view(), name='account-generic'),
 ]
-
-
-from . import views_django
-urlpatterns += [
-    path('django/accounts/', views_django.AccountListView.as_view(), name='django_account_list'),
-    path('django/accounts/create/', views_django.AccountCreateView.as_view(), name='django_account_create'),
-    path('django/accounts/<int:pk>/update/', views_django.AccountUpdateView.as_view(), name='django_account_update'),
-    path('django/accounts/<int:pk>/delete/', views_django.AccountDeleteView.as_view(), name='django_account_delete'),
-    path('django/dashboard/', views_django.DashboardView.as_view(), name='django_dashboard'),
-]

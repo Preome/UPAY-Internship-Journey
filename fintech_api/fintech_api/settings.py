@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'guardian',
     
     
     'accounts',
@@ -54,7 +55,6 @@ ROOT_URLCONF = 'fintech_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,6 +86,7 @@ DATABASES = {
 AUTHENTICATION_BACKENDS = [
     'authentication.auth_backends.EmailAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
 ]
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -118,7 +119,6 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
