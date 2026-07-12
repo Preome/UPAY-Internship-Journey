@@ -8,11 +8,11 @@ Django REST Framework API with JWT authentication, custom permission classes, ro
 
 | # | Deliverable | Status |
 |---|-------------|--------|
-| 1 | Custom permission classes — 8 reusable classes in [`accounts/permissions.py`](fintech_api/accounts/permissions.py) | Done |
+| 1 | Custom permission classes — 8 reusable classes   | [`accounts/permissions.py`](fintech_api/accounts/permissions.py)|
 | 2 | RBAC system — Admin, Agent, Customer roles with enforced endpoint access via JWT claims | [`accounts/permissions.py`](fintech_api/accounts/permissions.py), [`authentication/models.py`](fintech_api/authentication/models.py) |
 | 3 | Row-level security — users scoped to their own Transactions and Accounts only | [`accounts/views.py`](fintech_api/accounts/views.py) |
-| 4 | Permission matrix — full endpoint x role table in [`PERMISSION_MATRIX.md`](fintech_api/PERMISSION_MATRIX.md) | Done |
-
+| 4 | Permission matrix — full endpoint x role table  |  |
+[`PERMISSION_MATRIX.md`](fintech_api/PERMISSION_MATRIX.md)
 ---
 
 ## Task 1: Built-in DRF Permissions + django-guardian
