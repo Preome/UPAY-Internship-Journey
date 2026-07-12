@@ -11,7 +11,7 @@ Django REST Framework API with JWT authentication, custom permission classes, ro
 | 1 | Custom permission classes — 8 reusable classes   | [`accounts/permissions.py`](fintech_api/accounts/permissions.py)|
 | 2 | RBAC system — Admin, Agent, Customer roles with enforced endpoint access via JWT claims | [`accounts/permissions.py`](fintech_api/accounts/permissions.py), [`authentication/models.py`](fintech_api/authentication/models.py) |
 | 3 | Row-level security — users scoped to their own Transactions and Accounts only | [`accounts/views.py`](fintech_api/accounts/views.py) |
-| 4 | Permission matrix — full endpoint x role table  |  |
+| 4 | Permission matrix — full endpoint x role table  |  
 [`PERMISSION_MATRIX.md`](fintech_api/PERMISSION_MATRIX.md)
 ---
 
@@ -390,15 +390,3 @@ fintech_api/
 
 ---
 
-## Files changed in this branch
-
-| File | Change |
-|------|--------|
-| [`accounts/permissions.py`](fintech_api/accounts/permissions.py) | **NEW** — 8 custom permission classes: `CombinablePermission`, `And`, `Or`, `IsAccountOwner`, `IsVerifiedUser`, `IsActiveAccount`, `IsAccountOwnerOrAdmin`, `HasRole`, `IsAdmin`, `IsAgent`, `IsCustomer`, `IsOwnerOrReadOnly`, `IsOwnerReadOnlyOrAdmin` |
-| [`accounts/views.py`](fintech_api/accounts/views.py) | **UPDATED** — `get_permissions()` per action, `get_queryset()` with user scoping, `get_object()` with `check_object_permissions()`, django-guardian `assign_perm` in `perform_create` |
-| [`authentication/models.py`](fintech_api/authentication/models.py) | **UPDATED** — `Role` model (OneToOne on User, `admin`/`agent`/`customer`) |
-| [`authentication/serializers.py`](fintech_api/authentication/serializers.py) | **UPDATED** — JWT `role` claim now reads from `Role.get_role_for_user()` |
-| [`fintech_api/settings.py`](fintech_api/fintech_api/settings.py) | **UPDATED** — `guardian` in `INSTALLED_APPS`, `ObjectPermissionBackend` in `AUTHENTICATION_BACKENDS` |
-| [`test_permissions.py`](fintech_api/test_permissions.py) | **NEW** — 35 automated permission tests |
-| [`PERMISSION_MATRIX.md`](fintech_api/PERMISSION_MATRIX.md) | **NEW** — full endpoint x role matrix + 6 curl break attempts |
-| [`requirements.txt`](fintech_api/requirements.txt) | **UPDATED** — `django-guardian==3.3.2` |
