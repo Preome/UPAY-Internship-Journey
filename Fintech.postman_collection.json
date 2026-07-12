@@ -1,0 +1,473 @@
+{
+  "info": {
+    "_postman_id": "be9a877c-3b5e-4cee-833a-0bc1fed13676",
+    "name": "Fintech API — Auth Comparison (Basic vs JWT)",
+    "description": "Side-by-side comparison of Basic Auth vs JWT Auth in Postman. Same CRUD endpoints called with both auth methods.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. JWT Auth Flow",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"newuser@test.com\",\n    \"username\": \"newuser\",\n    \"password\": \"testpass123\",\n    \"password2\": \"testpass123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/auth/register/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "register", ""]
+            }
+          }
+        },
+        {
+          "name": "Login (get JWT tokens)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"newuser@test.com\",\n    \"password\": \"testpass123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/auth/login/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "login", ""]
+            }
+          },
+          "response": [
+            {
+              "name": "Login Response (JWT)",
+              "status": "200",
+              "code": 200,
+              "body": "{\n    \"user\": {\n        \"id\": 5,\n        \"email\": \"newuser@test.com\",\n        \"username\": \"newuser\"\n    },\n    \"access\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"session\": {\n        \"id\": 1,\n        \"device\": \"PostmanRuntime/7.36.0\",\n        \"ip_address\": \"127.0.0.1\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token (rotation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refresh\": \"<paste_refresh_token_here>\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/auth/refresh/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "refresh", ""]
+            }
+          }
+        },
+        {
+          "name": "List Active Sessions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token>", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/auth/sessions/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "sessions", ""]
+            }
+          }
+        },
+        {
+          "name": "Revoke Session by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token>", "type": "string" }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/auth/sessions/1/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "sessions", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Revoke All Sessions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token>", "type": "string" }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/auth/sessions/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "sessions", ""]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token>", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refresh\": \"<paste_refresh_token>\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/auth/logout/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "logout", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. COMPARE: Basic Auth (Token) — CRUD",
+      "item": [
+        {
+          "name": "List Accounts (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Account (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"account_number\": \"ACC-BASIC-01\",\n    \"account_type\": \"SAVINGS\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", ""]
+            }
+          }
+        },
+        {
+          "name": "Freeze Account (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reason\": \"Suspicious activity\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/1/freeze/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", "1", "freeze", ""]
+            }
+          }
+        },
+        {
+          "name": "Account Statement (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/1/statement/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", "1", "statement", ""]
+            }
+          }
+        },
+        {
+          "name": "Deposit (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"account\": 1,\n    \"transaction_type\": \"DEPOSIT\",\n    \"amount\": 1000.00,\n    \"description\": \"Basic Auth deposit\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/transactions/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "transactions", ""]
+            }
+          }
+        },
+        {
+          "name": "Reverse Transaction (Basic Auth)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "password", "value": "test123", "type": "string" },
+                { "key": "username", "value": "testuser", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reason\": \"Incorrect amount\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/transactions/1/reverse/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "transactions", "1", "reverse", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. COMPARE: JWT Bearer Auth — Same CRUD",
+      "item": [
+        {
+          "name": "List Accounts (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Account (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"account_number\": \"ACC-JWT-01\",\n    \"account_type\": \"CHECKING\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", ""]
+            }
+          }
+        },
+        {
+          "name": "Freeze Account (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reason\": \"Fraud suspicion\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/1/freeze/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", "1", "freeze", ""]
+            }
+          }
+        },
+        {
+          "name": "Account Statement (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/accounts/1/statement/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "accounts", "1", "statement", ""]
+            }
+          }
+        },
+        {
+          "name": "Deposit (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"account\": 1,\n    \"transaction_type\": \"DEPOSIT\",\n    \"amount\": 500.00,\n    \"description\": \"JWT Auth deposit\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/transactions/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "transactions", ""]
+            }
+          }
+        },
+        {
+          "name": "Reverse Transaction (JWT Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "<paste_access_token_here>", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reason\": \"Wrong amount entered\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/transactions/1/reverse/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "transactions", "1", "reverse", ""]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
